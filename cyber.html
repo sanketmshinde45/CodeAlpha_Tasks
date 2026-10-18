@@ -1,0 +1,633 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phishing Awareness Training</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    line-height: 1.6;
+}
+
+header {
+    background: #0f172a;
+    color: white;
+    padding: 25px 7%;
+    text-align: center;
+}
+
+header h1 {
+    color: #38bdf8;
+    margin-bottom: 8px;
+}
+
+nav {
+    background: #1e293b;
+    padding: 12px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 8px 12px;
+    display: inline-block;
+}
+
+nav a:hover {
+    color: #38bdf8;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 25px auto;
+}
+
+.hero {
+    background: linear-gradient(135deg, #0f172a, #155e75);
+    color: white;
+    padding: 40px 25px;
+    border-radius: 14px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.hero h2 {
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #0000000d;
+    scroll-margin-top: 75px;
+}
+
+h2 {
+    color: #0369a1;
+    margin-bottom: 15px;
+}
+
+h3 {
+    margin-bottom: 8px;
+    color: #0f172a;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: #f8fafc;
+    padding: 18px;
+    border-left: 4px solid #0284c7;
+    border-radius: 8px;
+}
+
+.warning {
+    background: #fff7ed;
+    border-left-color: #ea580c;
+}
+
+.good {
+    background: #f0fdf4;
+    border-left-color: #16a34a;
+}
+
+.email {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 18px;
+    border-radius: 8px;
+    margin: 12px 0;
+    overflow-wrap: anywhere;
+}
+
+button {
+    background: #0284c7;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 11px 18px;
+    cursor: pointer;
+    font-size: 15px;
+    margin: 8px 5px 0 0;
+}
+
+button:hover {
+    background: #0369a1;
+}
+
+.quiz-question {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 18px 0;
+}
+
+.quiz-question label {
+    display: block;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 8px;
+    display: none;
+    background: #e0f2fe;
+}
+
+footer {
+    background: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 22px;
+    margin-top: 30px;
+}
+
+ul, ol {
+    padding-left: 24px;
+}
+
+li {
+    margin-bottom: 7px;
+}
+
+.progress {
+    background: #e2e8f0;
+    height: 10px;
+    border-radius: 10px;
+    margin: 12px 0;
+    overflow: hidden;
+}
+
+#progressBar {
+    background: #0284c7;
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+@media (max-width: 600px) {
+    .hero h2 {
+        font-size: 24px;
+    }
+
+    section {
+        padding: 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🛡 Phishing Awareness Training</h1>
+    <p>Think Before You Click | Stay Safe Online</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#phishing">Phishing</a>
+    <a href="#examples">Examples</a>
+    <a href="#prevention">Prevention</a>
+    <a href="#quiz">Quiz</a>
+</nav>
+
+<main class="container">
+
+<div class="hero" id="home">
+    <h2>Recognize Phishing. Protect Yourself.</h2>
+    <p>
+        Learn how cybercriminals trick people into revealing
+        passwords, OTPs, banking details, and personal information.
+    </p>
+    <br>
+    <a href="#phishing">
+        <button>Start Training</button>
+    </a>
+</div>
+
+<section id="phishing">
+    <h2>1. What Is Phishing?</h2>
+
+    <p>
+        Phishing is a cyberattack in which an attacker pretends to
+        be a trusted person or organization to trick victims into
+        revealing confidential information, opening harmful
+        attachments, or visiting fraudulent websites.
+    </p>
+
+    <br>
+    <div class="grid">
+        <div class="card">
+            <h3>📧 Email Phishing</h3>
+            <p>Fake emails pretending to come from banks, companies,
+            colleges, or online services.</p>
+        </div>
+
+        <div class="card">
+            <h3>📱 Smishing</h3>
+            <p>Fraudulent SMS or text messages containing suspicious
+            links or payment requests.</p>
+        </div>
+
+        <div class="card">
+            <h3>☎ Vishing</h3>
+            <p>Phone calls used to steal OTPs, passwords, or banking
+            information.</p>
+        </div>
+
+        <div class="card">
+            <h3>🎯 Spear Phishing</h3>
+            <p>Targeted phishing messages customized for a specific
+            person or organization.</p>
+        </div>
+    </div>
+</section>
+
+<section id="recognition">
+    <h2>2. How to Recognize Phishing</h2>
+
+    <div class="grid">
+        <div class="card warning">
+            <h3>Suspicious Sender</h3>
+            <p>Check the complete email address and domain.
+            A display name alone does not prove identity.</p>
+        </div>
+
+        <div class="card warning">
+            <h3>Urgent Language</h3>
+            <p>Messages such as "Your account will be blocked
+            immediately" pressure you to act without thinking.</p>
+        </div>
+
+        <div class="card warning">
+            <h3>Unexpected Links</h3>
+            <p>Look carefully at the actual domain before opening
+            a link. Similar-looking names may be fraudulent.</p>
+        </div>
+
+        <div class="card warning">
+            <h3>Unexpected Attachments</h3>
+            <p>Unknown files may contain malware or lead to
+            credential theft.</p>
+        </div>
+
+        <div class="card warning">
+            <h3>Requests for Secrets</h3>
+            <p>Never share your password, PIN, or OTP with someone
+            who contacts you unexpectedly.</p>
+        </div>
+
+        <div class="card warning">
+            <h3>Unusual Offers</h3>
+            <p>Prize claims, refunds, and unbelievable discounts
+            may be designed to steal information.</p>
+        </div>
+    </div>
+
+    <br>
+    <h3>How to Check a Website</h3>
+    <ul>
+        <li>Read the domain name carefully, including its spelling.</li>
+        <li>HTTPS encrypts a connection but does not guarantee that
+        a website is legitimate.</li>
+        <li>Do not trust a website just because it has a logo or
+        professional design.</li>
+        <li>Visit the official website using a trusted bookmark
+        or manually entered address.</li>
+        <li>Never enter credentials after following an unexpected
+        login link.</li>
+    </ul>
+</section>
+
+<section id="social">
+    <h2>3. Social Engineering Techniques</h2>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Fear</h3>
+            <p>"Your bank account will be suspended."</p>
+            <p><b>Defense:</b> Contact the bank through its official
+            channel.</p>
+        </div>
+
+        <div class="card">
+            <h3>Urgency</h3>
+            <p>"Pay within five minutes to avoid a penalty."</p>
+            <p><b>Defense:</b> Pause and verify the request.</p>
+        </div>
+
+        <div class="card">
+            <h3>Authority</h3>
+            <p>"I am from IT support. Tell me your password."</p>
+            <p><b>Defense:</b> Verify identity and follow official
+            security procedures.</p>
+        </div>
+
+        <div class="card">
+            <h3>Curiosity and Rewards</h3>
+            <p>"You have won a free smartphone!"</p>
+            <p><b>Defense:</b> Verify the offer independently.</p>
+        </div>
+    </div>
+</section>
+
+<section id="examples">
+    <h2>4. Realistic Phishing Examples</h2>
+    <p>
+        The following are educational simulations, not genuine
+        messages from the named organizations.
+    </p>
+
+    <div class="email">
+        <h3>Example A: Fake Bank Alert</h3>
+        <p><b>From:</b> Security Team &lt;alert@example.invalid&gt;</p>
+        <p><b>Subject:</b> Immediate Account Verification</p>
+        <p>Your account may be suspended. Click the link below
+        to verify your details immediately.</p>
+        <p><b>Warning signs:</b> Urgency, an unverified sender,
+        and a request to verify sensitive information through a link.</p>
+    </div>
+
+    <div class="email">
+        <h3>Example B: Fake Delivery SMS</h3>
+        <p><b>Message:</b> Your parcel is on hold. Pay a small
+        additional fee using the link in this message.</p>
+        <p><b>Warning signs:</b> Unexpected payment request and
+        an unverified delivery link.</p>
+    </div>
+
+    <div class="email">
+        <h3>Example C: Fake College Login</h3>
+        <p><b>Message:</b> Your student account requires immediate
+        password verification to prevent deactivation.</p>
+        <p><b>Warning signs:</b> Threat of account deactivation
+        and an unexpected request for credentials.</p>
+    </div>
+
+    <div class="card good">
+        <h3>What Should You Do?</h3>
+        <ol>
+            <li>Do not click suspicious links or open unexpected files.</li>
+            <li>Verify the message using a known official contact.</li>
+            <li>Report it to your organization's IT or security team.</li>
+            <li>Delete or quarantine the message according to
+            your organization's reporting procedure.</li>
+        </ol>
+    </div>
+</section>
+
+<section id="prevention">
+    <h2>5. Best Practices to Stay Safe</h2>
+
+    <div class="grid">
+        <div class="card good">
+            <h3>Use MFA</h3>
+            <p>Enable multifactor authentication, preferably
+            phishing-resistant passkeys or security keys when available.</p>
+        </div>
+
+        <div class="card good">
+            <h3>Use Strong Passwords</h3>
+            <p>Use unique passwords for different accounts and
+            store them in a trusted password manager.</p>
+        </div>
+
+        <div class="card good">
+            <h3>Update Software</h3>
+            <p>Keep your operating system, browser, and security
+            software up to date.</p>
+        </div>
+
+        <div class="card good">
+            <h3>Verify Requests</h3>
+            <p>Confirm unusual payment, password, or information
+            requests through an independent channel.</p>
+        </div>
+
+        <div class="card good">
+            <h3>Report Attacks</h3>
+            <p>Use your email provider's phishing-report feature
+            or your organization's security reporting process.</p>
+        </div>
+
+        <div class="card good">
+            <h3>Act Quickly if Compromised</h3>
+            <p>Change affected passwords through the official
+            website, revoke active sessions, and contact your
+            bank if financial information is exposed.</p>
+        </div>
+    </div>
+</section>
+
+<section id="quiz">
+    <h2>6. Interactive Knowledge Quiz</h2>
+    <p>Answer all five questions and check your score.</p>
+
+    <div class="progress">
+        <div id="progressBar"></div>
+    </div>
+    <p id="progressText">Questions answered: 0 / 5</p>
+
+    <form id="quizForm">
+
+        <div class="quiz-question">
+            <h3>Q1. What is phishing?</h3>
+            <label><input type="radio" name="q1" value="0">
+                A. Improving internet speed</label>
+            <label><input type="radio" name="q1" value="1">
+                B. Tricking people into revealing information</label>
+            <label><input type="radio" name="q1" value="0">
+                C. Backing up files</label>
+        </div>
+
+        <div class="quiz-question">
+            <h3>Q2. You receive an unexpected email asking for your OTP.
+            What should you do?</h3>
+            <label><input type="radio" name="q2" value="0">
+                A. Reply with the OTP</label>
+            <label><input type="radio" name="q2" value="1">
+                B. Do not share it; verify and report the request</label>
+            <label><input type="radio" name="q2" value="0">
+                C. Forward it to friends</label>
+        </div>
+
+        <div class="quiz-question">
+            <h3>Q3. Does HTTPS guarantee a website is legitimate?</h3>
+            <label><input type="radio" name="q3" value="0">
+                A. Yes, always</label>
+            <label><input type="radio" name="q3" value="1">
+                B. No, fraudulent sites can also use HTTPS</label>
+            <label><input type="radio" name="q3" value="0">
+                C. Only on mobile phones</label>
+        </div>
+
+        <div class="quiz-question">
+            <h3>Q4. What is the safest way to access your bank account?</h3>
+            <label><input type="radio" name="q4" value="1">
+                A. Use the official app or a trusted bookmark</label>
+            <label><input type="radio" name="q4" value="0">
+                B. Click any link in a text message</label>
+            <label><input type="radio" name="q4" value="0">
+                C. Follow a link offering a prize</label>
+        </div>
+
+        <div class="quiz-question">
+            <h3>Q5. What is spear phishing?</h3>
+            <label><input type="radio" name="q5" value="0">
+                A. A computer hardware failure</label>
+            <label><input type="radio" name="q5" value="0">
+                B. A method of encrypting files</label>
+            <label><input type="radio" name="q5" value="1">
+                C. A targeted phishing attack against a specific person
+                or organization</label>
+        </div>
+
+        <button type="submit">Submit Quiz</button>
+        <button type="button" id="resetButton">Try Again</button>
+    </form>
+
+    <div id="result" role="status" aria-live="polite"></div>
+</section>
+
+<section>
+    <h2>7. Conclusion</h2>
+    <p>
+        Phishing attacks exploit human trust rather than only
+        technical weaknesses. By checking senders and website
+        addresses, refusing unexpected requests for confidential
+        information, enabling multifactor authentication, and
+        reporting suspicious messages, users can significantly
+        reduce their risk.
+    </p>
+    <br>
+    <p><b>Remember:</b> Stop, Think, Verify, and Then Act.</p>
+</section>
+
+</main>
+
+<footer>
+    <p>Cyber Security Awareness Project</p>
+    <p>Educational use only | Stay alert and stay secure</p>
+</footer>
+
+<script>
+const form = document.getElementById("quizForm");
+const result = document.getElementById("result");
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const resetButton = document.getElementById("resetButton");
+
+const explanations = [
+    "Phishing tricks people into disclosing information or taking unsafe actions.",
+    "Never share OTPs or passwords in response to unexpected requests.",
+    "HTTPS encrypts the connection but does not prove the site owner is trustworthy.",
+    "Use the official app or a trusted bookmark instead of an unexpected link.",
+    "Spear phishing targets a particular person or organization."
+];
+
+function updateProgress() {
+    let answered = 0;
+
+    for (let i = 1; i <= 5; i++) {
+        if (document.querySelector('input[name="q' + i + '"]:checked')) {
+            answered++;
+        }
+    }
+
+    progressBar.style.width = (answered / 5 * 100) + "%";
+    progressText.textContent = "Questions answered: " + answered + " / 5";
+}
+
+form.addEventListener("change", updateProgress);
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let score = 0;
+    let unanswered = [];
+
+    for (let i = 1; i <= 5; i++) {
+        const selected = document.querySelector(
+            'input[name="q' + i + '"]:checked'
+        );
+
+        if (!selected) {
+            unanswered.push(i);
+        } else {
+            score += Number(selected.value);
+        }
+    }
+
+    if (unanswered.length > 0) {
+        result.style.display = "block";
+        result.textContent =
+            "Please answer all questions. Unanswered: " +
+            unanswered.join(", ");
+        return;
+    }
+
+    let feedback = "<h3>Your Score: " + score + " / 5</h3>";
+
+    if (score === 5) {
+        feedback += "<p>Excellent! You understand the key phishing risks.</p>";
+    } else if (score >= 3) {
+        feedback += "<p>Good effort! Review the explanations below.</p>";
+    } else {
+        feedback += "<p>Keep learning. Review the training sections and try again.</p>";
+    }
+
+    feedback += "<h3>Answer Explanations</h3><ol>";
+
+    for (let i = 1; i <= 5; i++) {
+        const selected = document.querySelector(
+            'input[name="q' + i + '"]:checked'
+        );
+
+        const correct = selected.value === "1";
+
+        feedback += "<li><b>" +
+            (correct ? "Correct" : "Incorrect") +
+            ":</b> " + explanations[i - 1] + "</li>";
+    }
+
+    feedback += "</ol>";
+
+    result.innerHTML = feedback;
+    result.style.display = "block";
+    result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
+resetButton.addEventListener("click", function() {
+    form.reset();
+    result.style.display = "none";
+    result.textContent = "";
+    updateProgress();
+});
+</script>
+
+</body>
+</html>
