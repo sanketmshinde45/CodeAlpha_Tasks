@@ -1,0 +1,47 @@
+from scapy.all import sniff, IP, TCP, UDP, ICMP, Raw
+
+def packet_callback(packet):
+    if IP in packet:
+        src = packet[IP].src
+        dst = packet[IP].dst
+
+        # Identify protocol
+        if TCP in packet:
+            protocol = "TCP"
+            sport = packet[TCP].sport
+            dport = packet[TCP].dport
+        elif UDP in packet:
+            protocol = "UDP"
+            sport = packet[UDP].sport
+            dport = packet[UDP].dport
+        elif ICMP in packet:
+            protocol = "ICMP"
+            sport = "-"
+            dport = "-"
+        else:
+            protocol = packet[IP].proto
+            sport = "-"
+            dport = "-"
+
+        # Extract payload
+        if Raw in packet:
+            payload = packet[Raw].load
+            try:
+                payload = payload.decode("utf-8", errors="replace")
+            except:
+                payload = str(payload)
+        else:
+            payload = "No payload"
+
+        print("\n" + "=" * 60)
+        print("Source IP      :", src)
+        print("Destination IP :", dst)
+        print("Protocol       :", protocol)
+        print("Source Port    :", sport)
+        print("Destination Port:", dport)
+        print("Payload        :", payload[:100])
+
+print("Basic Network Sniffer Started...")
+print("Capturing packets... Press Ctrl+C to stop.\n")
+
+sniff(prn=packet_callback, store=False)
