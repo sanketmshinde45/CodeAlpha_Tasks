@@ -1,0 +1,290 @@
+
+import ast
+import re
+import sys
+from pathlib import Path
+from datetime import datetime
+
+# ==========================================
+# SECURE CODING REVIEW TOOL
+# Educational Static Security Analyzer
+# ==========================================
+
+SEVERITY_ORDER = {
+    "HIGH": 1,
+    "MEDIUM": 2,
+    "LOW": 3
+}
+
+
+def add_finding(findings, line, severity, vulnerability,
+                description, recommendation):
+    findings.append({
+        "line": line,
+        "severity": severity,
+        "vulnerability": vulnerability,
+        "description": description,
+        "recommendation": recommendation
+    })
+
+
+def scan_secrets(source, findings):
+    """Look for common hardcoded secret patterns."""
+
+    patterns = [
+        (
+            r"""(?i)\b(password|passwd|secret|api_key|apikey|token)
+            \b\s*=\s*['"][^'"]{4,}['"]""",
+            "Possible Hardcoded Secret",
+            "HIGH",
+            "A password, token, or key may be stored directly in source code.",
+            "Load secrets from environment variables or a secrets manager."
+        ),
+        (
+            r"""-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----""",
+            "Private Key in Source Code",
+            "HIGH",
+            "A private key marker was found in the source.",
+            "Remove the private key from source control and rotate it if exposed."
+        )
+    ]
+
+    for line_number, line in enumerate(source.splitlines(), start=1):
+        for pattern, name, severity, description, recommendation in patterns:
+            if re.search(pattern, line, re.VERBOSE):
+                add_finding(
+                    findings, line_number, severity,
+                    name, description, recommendation
+                )
+
+
+class SecurityVisitor(ast.NodeVisitor):
+    """Inspect Python syntax without executing the program."""
+
+    def __init__(self, findings):
+        self.findings = findings
+
+    def report(self, node, severity, name, description, recommendation):
+        add_finding(
+            self.findings,
+            getattr(node, "lineno", 1),
+            severity, name, description, recommendation
+        )
+
+    def visit_Call(self, node):
+        # Dynamic code execution
+        if isinstance(node.func, ast.Name):
+            if node.func.id in ("eval", "exec"):
+                self.report(
+                    node, "HIGH",
+                    "Dynamic Code Execution",
+                    f"{node.func.id}() can execute dynamically supplied code.",
+                    "Avoid eval()/exec(). Use explicit parsing or safe alternatives."
+                )
+
+            # Shell command execution
+            if node.func.id in ("system", "popen"):
+                self.report(
+                    node, "MEDIUM",
+                    "Potentially Unsafe Command Execution",
+                    f"{node.func.id}() may execute operating-system commands.",
+                    "Avoid shell command construction; validate inputs and use safe APIs."
+                )
+
+        # subprocess shell=True
+        if isinstance(node.func, ast.Attribute):
+            if node.func.attr in ("run", "Popen", "call", "check_output"):
+                for keyword in node.keywords:
+                    if (keyword.arg == "shell"
+                            and isinstance(keyword.value, ast.Constant)
+                            and keyword.value.value is True):
+                        self.report(
+                            node, "HIGH",
+                            "Shell Injection Risk",
+                            "A subprocess call enables shell interpretation.",
+                            "Prefer an argument list with shell=False and validate inputs."
+                        )
+
+            # SQL query construction
+            if node.func.attr in ("execute", "executemany"):
+                if node.args:
+                    query = node.args[0]
+
+                    if isinstance(query, (ast.JoinedStr, ast.BinOp)):
+                        self.report(
+                            node, "HIGH",
+                            "Possible SQL Injection",
+                            "SQL query may be constructed using string formatting "
+                            "or concatenation.",
+                            "Use parameterized queries and bind variables."
+                        )
+
+        # Unsafe deserialization
+        if isinstance(node.func, ast.Attribute):
+            if node.func.attr == "loads":
+                if isinstance(node.func.value, ast.Name):
+                    if node.func.value.id == "pickle":
+                        self.report(
+                            node, "HIGH",
+                            "Unsafe Deserialization",
+                            "pickle.loads() can execute code when processing "
+                            "malicious serialized data.",
+                            "Do not unpickle untrusted data. Use a safer data format."
+                        )
+
+        # Weak hash algorithms
+        if isinstance(node.func, ast.Attribute):
+            if (isinstance(node.func.value, ast.Name)
+                    and node.func.value.id == "hashlib"
+                    and node.func.attr in ("md5", "sha1")):
+                self.report(
+                    node, "MEDIUM",
+                    "Weak Hash Algorithm",
+                    f"hashlib.{node.func.attr}() is unsuitable for modern "
+                    "security-sensitive hashing.",
+                    "For integrity, use SHA-256 or stronger. For passwords, "
+                    "use Argon2id, scrypt, or PBKDF2."
+                )
+
+        self.generic_visit(node)
+
+
+def scan_file(file_path):
+    findings = []
+
+    try:
+        source = Path(file_path).read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        print("Could not read file:", error)
+        return None
+
+    # Inspect possible hardcoded secrets
+    scan_secrets(source, findings)
+
+    # Parse and inspect Python syntax
+    try:
+        syntax_tree = ast.parse(source, filename=str(file_path))
+        visitor = SecurityVisitor(findings)
+        visitor.visit(syntax_tree)
+    except SyntaxError as error:
+        print("Syntax error in source:", error)
+        add_finding(
+            findings,
+            error.lineno or 1,
+            "LOW",
+            "Syntax Error",
+            "The file could not be fully analyzed because it contains "
+            "invalid Python syntax.",
+            "Fix the syntax error and run the review again."
+        )
+
+    # Remove exact duplicate findings
+    unique = []
+    seen = set()
+
+    for finding in findings:
+        key = (
+            finding["line"],
+            finding["vulnerability"],
+            finding["description"]
+        )
+        if key not in seen:
+            seen.add(key)
+            unique.append(finding)
+
+    return unique
+
+
+def save_report(file_path, findings):
+    """Save findings to a timestamped text report."""
+
+    report_path = Path(file_path).with_name("security_review_report.txt")
+
+    lines = [
+        "SECURE CODING REVIEW REPORT",
+        "=" * 55,
+        f"Scanned file: {file_path}",
+        f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        f"Total findings: {len(findings)}",
+        "",
+        "IMPORTANT: This is a basic static analyzer. Findings require "
+        "manual verification.",
+        ""
+    ]
+
+    if not findings:
+        lines.append(
+            "No patterns covered by this scanner were detected. "
+            "This does not prove the code is secure."
+        )
+
+    for number, finding in enumerate(findings, start=1):
+        lines.extend([
+            "-" * 55,
+            f"Finding #{number}",
+            f"Line: {finding['line']}",
+            f"Severity: {finding['severity']}",
+            f"Vulnerability: {finding['vulnerability']}",
+            f"Description: {finding['description']}",
+            f"Recommendation: {finding['recommendation']}",
+            ""
+        ])
+
+    report_path.write_text("\n".join(lines), encoding="utf-8")
+    return report_path
+
+
+def main():
+    print("=" * 55)
+    print("       SECURE CODING REVIEW TOOL")
+    print("=" * 55)
+
+    if len(sys.argv) > 1:
+        file_path = sys.argv[1]
+    else:
+        file_path = input(
+            "Enter the path of the Python file to audit: "
+        ).strip().strip('"')
+
+    if not Path(file_path).is_file():
+        print("Error: File not found.")
+        return
+
+    if Path(file_path).suffix.lower() != ".py":
+        print("This version scans Python (.py) source files only.")
+        return
+
+    findings = scan_file(file_path)
+
+    if findings is None:
+        return
+
+    findings.sort(
+        key=lambda item: (
+            SEVERITY_ORDER.get(item["severity"], 99),
+            item["line"]
+        )
+    )
+
+    print("\nSCAN RESULTS")
+    print("-" * 55)
+
+    if not findings:
+        print("No covered vulnerability patterns detected.")
+
+    for finding in findings:
+        print(f"\n[{finding['severity']}] Line {finding['line']}")
+        print("Issue:", finding["vulnerability"])
+        print("Details:", finding["description"])
+        print("Fix:", finding["recommendation"])
+
+    report_path = save_report(file_path, findings)
+
+    print("\n" + "=" * 55)
+    print("Review completed.")
+    print("Total findings:", len(findings))
+    print("Report saved to:", report_path.resolve())
+
+
+if __name__ == "__main__":
+    main()
